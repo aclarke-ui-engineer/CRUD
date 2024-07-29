@@ -1,0 +1,32 @@
+<section class="table">
+  <app-controls (openModel)="handleIsEditSelection($event)"></app-controls>
+  <ag-grid-angular
+    style="width: 80%; height: 300px; margin: auto"
+    class="ag-theme-balham"
+    [gridOptions]="{ rowHeight: 32, headerHeight: 40 }"
+    [rowData]="rowData"
+    [columnDefs]="cols"
+    (rowSelected)="setSelectedRowData($event)"
+  ></ag-grid-angular>
+
+  <ng-template #selectionMutationModelContent>
+    <ng-container *ngIf="isEditSelection; else removeSelection">
+      <app-edit
+        [existingRecords]="data"
+        [closeModel]="closeModel"
+        (createUpdate)="handleCreateDeleteEvent($event)"
+      ></app-edit>
+    </ng-container>
+    <ng-template #removeSelection>
+      <app-remove (delete)="deleteChillSpot()"></app-remove>
+    </ng-template>
+  </ng-template>
+
+  <ng-container *ngIf="showModel">
+    <app-modal (close)="closeModel()">
+      <ng-container
+        *ngTemplateOutlet="selectionMutationModelContent"
+      ></ng-container>
+    </app-modal>
+  </ng-container>
+</section>

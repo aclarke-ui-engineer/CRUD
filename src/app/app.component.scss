@@ -1,0 +1,31 @@
+main {
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  & > * {
+    width: 100%;
+  }
+}
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: aliceblue;
+  padding: 25px;
+  text-align: center;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: aliceblue;
+  padding: 25px;
+  text-align: center;
+}

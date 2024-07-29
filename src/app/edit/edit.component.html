@@ -1,0 +1,86 @@
+<section>
+  <form class="edit-form" [formGroup]="formGroup" (ngSubmit)="handleSubmit()">
+    <div class="edit-form__row">
+      <label class="edit-form__row__label" for="name">Name</label>
+      <input
+        class="edit-form__row__input"
+        type="text"
+        name="name"
+        id="name"
+        formControlName="name"
+        [placeholder]="
+          !existingRecords?.name ? 'provide name of chill spot' : ''
+        "
+      />
+    </div>
+
+    <div class="edit-form__row">
+      <label class="edit-form__row__label" for="location">Location</label>
+      <input
+        class="edit-form__row__input"
+        type="text"
+        name="location"
+        id="location"
+        formControlName="location"
+        [placeholder]="!existingRecords?.location ? 'provide location' : ''"
+      />
+    </div>
+
+    <div class="edit-form__row">
+      <label class="edit-form__row__label" for="description">Description</label>
+      <textarea
+        class="edit-form__row__input"
+        type="text"
+        name="description"
+        id="description"
+        formControlName="description"
+        [placeholder]="
+          !existingRecords?.description ? 'provide description' : ''
+        "
+      ></textarea>
+    </div>
+
+    <div class="edit-form__row">
+      <label class="edit-form__row__label" for="rating">Rating</label>
+      <input
+        class="edit-form__row__input"
+        type="text"
+        name="rating"
+        id="rating"
+        formControlName="rating"
+        [placeholder]="!existingRecords?.rating ? 'provide rating' : ''"
+      />
+    </div>
+
+    <div class="edit-form__row">
+      <label class="edit-form__row__label" for="entryCost">Entry Cost</label>
+      <input
+        class="edit-form__row__input"
+        type="text"
+        name="entryCost"
+        id="entryCost"
+        formControlName="entryCost"
+        [placeholder]="!existingRecords?.description ? ' true or false' : ''"
+      />
+    </div>
+
+    <div class="edit-form__row">
+      <label class="edit-form__row__label" for="establishedSince"
+        >Year Established</label
+      >
+      <input
+        class="edit-form__row__input"
+        type="text"
+        name="establishedSince"
+        id="establishedSince"
+        formControlName="establishedSince"
+        [placeholder]="
+          !existingRecords?.establishedSince ? 'provide year established' : ''
+        "
+      />
+    </div>
+    <div class="edit-form__action">
+      <button class="button">Submit</button>
+    </div>
+  </form>
+</section>
