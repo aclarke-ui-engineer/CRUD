@@ -16,10 +16,29 @@ export class ChillSpotComponent implements OnInit, OnDestroy {
 
   private result: IChillSpot[] = [];
   private columns: ColDef[] = [];
+  private defaultColumns: ColDef = {
+    editable: true,
+    sortable: true,
+    filter: true,
+    resizable: true,
+  };
 
   private currentSelectedData: IChillSpot = {} as IChillSpot;
+
   private showModel_ = false;
   private isEditSelection_ = false;
+  private isLoading_ = false;
+
+  private getAllChillSpotsSubscription: Subscription =
+    null as unknown as Subscription;
+  private getChillSpotByIdSubscription: Subscription =
+    null as unknown as Subscription;
+  private createChillSpotSubscription: Subscription =
+    null as unknown as Subscription;
+  private updateChillSpotSubscription: Subscription =
+    null as unknown as Subscription;
+  private deleteChillSpotSubscription: Subscription =
+    null as unknown as Subscription;
 
   constructor(private chillSpotService: ChillSpotService) {}
 
@@ -29,6 +48,10 @@ export class ChillSpotComponent implements OnInit, OnDestroy {
 
   get cols(): ColDef[] {
     return this.columns;
+  }
+
+  get defaultCol(): ColDef {
+    return this.defaultColumns;
   }
 
   get data(): IChillSpot {
@@ -43,71 +66,94 @@ export class ChillSpotComponent implements OnInit, OnDestroy {
     return this.isEditSelection_;
   }
 
+  get isLoading(): boolean {
+    return this.isLoading_;
+  }
+
+  private set isLoading(value: boolean) {
+    this.isLoading_ = value;
+  }
+
   private getAllChillSpots(): void {
-    this.chillSpotService.getAllChillSpots$().subscribe({
-      next: (chillSpots) => {
-        this.result = chillSpots;
-        this.columns = Object.keys(chillSpots[0]).map((key) => ({
-          field: key,
-          checkboxSelection: key === 'id' ? true : false,
-        }));
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        console.log('complete');
-        this.currentSelectedData = {} as IChillSpot;
-      },
-    });
+    this.getAllChillSpotsSubscription = this.chillSpotService
+      .getAllChillSpots$()
+      .subscribe({
+        next: (chillSpots) => {
+          this.result = chillSpots;
+          this.columns = Object.keys(chillSpots[0]).map((key) => ({
+            field: key,
+            checkboxSelection: key === 'id' ? true : false,
+          }));
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log('complete');
+          this.currentSelectedData = {} as IChillSpot;
+        },
+      });
   }
 
   private getChillSpotById(id: string): void {
-    this.chillSpotService.getChillSpotById$(id).subscribe({
-      next: (chillSpot) => {
-        console.log(chillSpot);
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        console.log('complete');
-      },
-    });
+    this.isLoading = true;
+    this.getChillSpotByIdSubscription = this.chillSpotService
+      .getChillSpotById$(id)
+      .subscribe({
+        next: (chillSpot) => {
+          console.log(chillSpot);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log('complete');
+          this.isLoading = false;
+        },
+      });
   }
 
   private createChillSpot(chillSpot: IChillSpot): void {
-    this.chillSpotService.createChillSpot$(chillSpot).subscribe({
-      next: (chillSpot) => {
-        console.log(chillSpot);
-        this.shouldLoadData$.next(true);
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        console.log('complete');
-      },
-    });
+    this.isLoading = true;
+    this.createChillSpotSubscription = this.chillSpotService
+      .createChillSpot$(chillSpot)
+      .subscribe({
+        next: (chillSpot) => {
+          console.log(chillSpot);
+          this.shouldLoadData$.next(true);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log('complete');
+          this.isLoading = false;
+        },
+      });
   }
 
   private updateChillSpot(chillSpot: IChillSpot): void {
-    this.chillSpotService.updateChillSpot$(chillSpot).subscribe({
-      next: (chillSpot) => {
-        console.log(chillSpot);
-        this.shouldLoadData$.next(true);
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        console.log('complete');
-      },
-    });
+    this.isLoading = true;
+    this.updateChillSpotSubscription = this.chillSpotService
+      .updateChillSpot$(chillSpot)
+      .subscribe({
+        next: (chillSpot) => {
+          console.log(chillSpot);
+          this.shouldLoadData$.next(true);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log('complete');
+          this.isLoading = false;
+        },
+      });
   }
 
   deleteChillSpot(): void {
-    this.chillSpotService
+    this.isLoading = true;
+    this.deleteChillSpotSubscription = this.chillSpotService
       .deleteChillSpot$(this.currentSelectedData.id)
       .subscribe({
         next: (chillSpot) => {
@@ -119,6 +165,7 @@ export class ChillSpotComponent implements OnInit, OnDestroy {
         },
         complete: () => {
           console.log('completed');
+          this.isLoading = false;
         },
       });
   }
@@ -156,5 +203,10 @@ export class ChillSpotComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.shouldLoadDataSubscription.unsubscribe();
+    this.getAllChillSpotsSubscription.unsubscribe();
+    this.getChillSpotByIdSubscription.unsubscribe();
+    this.createChillSpotSubscription.unsubscribe();
+    this.updateChillSpotSubscription.unsubscribe();
+    this.deleteChillSpotSubscription.unsubscribe();
   }
 }
